@@ -1,0 +1,13 @@
+{
+  "name": "personal-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "preview": "npm run build && npx serve dist"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0"
+  }
+}
