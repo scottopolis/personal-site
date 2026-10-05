@@ -40,7 +40,7 @@ function layout({ title, description, body, page }) {
 <body class="${page}">
   <div class="site-shell">
     <header class="site-header">
-      <nav aria-label="Main navigation" class="header-links"><a href="${url('/')}">Writing</a><a href="${url('/about/')}">About</a></nav>
+      <nav aria-label="Main navigation" class="header-links"><a href="${url('/')}">Posts</a><a href="${url('/about/')}">About</a></nav>
       <a class="wordmark" href="${url('/')}" aria-label="Scott Bolinger, home">Scott Bolinger</a>
       <a class="header-external" href="https://www.youtube.com/@scottbolinger">YouTube</a>
     </header>
@@ -94,7 +94,35 @@ const list = rest.length ? `<section class="more-posts" aria-labelledby="latest-
 const homepage = `<article class="featured">${featured.cover ? `<a class="featured-image" href="${postLink(featured)}" aria-label="Read ${escape(featured.title)}"><img src="${url(`/assets/${encodeURIComponent(featured.cover)}`)}" alt=""></a>` : ''}<div class="featured-copy"><div><p class="eyebrow">Featured ${featured.youtube ? 'video' : 'essay'}</p><h1><a href="${postLink(featured)}">${escape(featured.title)}</a></h1><p class="featured-description">${escape(featured.description)}</p></div><div class="featured-meta"><time datetime="${featured.date.toISOString().slice(0, 10)}">${dateLabel(featured.date)}</time><a href="${postLink(featured)}">${featured.youtube ? 'Watch video' : 'Read essay'}</a></div></div></article>
   ${list}`;
 await writeFile(path.join(output, 'index.html'), layout({ title: 'Home', description: 'Scott Bolinger writes about software, AI, business, and building things.', body: homepage, page: 'home-page' }));
-const about = `<section class="about"><div><p class="eyebrow">About</p><h1>Hi, I’m Scott.</h1></div><div><p>I’m a software builder and longtime entrepreneur. I write about the ideas, tools, and lessons I pick up along the way.</p><p>More of my work and conversations are on <a href="https://www.youtube.com/@scottbolinger">YouTube</a>.</p></div></section>`;
+const eras = [
+  { period: '2013–17', label: 'Building businesses', events: [
+    ['2013', 'Co-founded AppPresser'],
+    ['2015/16', 'Launched Reactor & WooCommerce Smart Checkout'],
+    ['', 'AppPresser surpasses $1M in revenue (all-time)'],
+    ['2017', 'Founded Holler Box'],
+  ] },
+  { period: '2022–23', label: 'Commerce at GoDaddy', events: [
+    ['2022', 'Sold Holler Box'],
+    ['2022', 'Joined GoDaddy as a Senior Software Engineer'],
+    ['2022', 'Created a React component library adopted by internal teams'],
+    ['2023', 'Built an API driven checkout product for Managed WooCommerce Stores'],
+    ['2023', 'Won internal ideathon with an eCommerce AI assistant'],
+  ] },
+  { period: '2024–25', label: 'Airo and CASA', events: [
+    ['2024', 'Built the AI assistant into a framework used across GoDaddy. Branded as Airo, it was featured at investor day (and powered 4 demos).'],
+    ['2024', 'Won the One System internal award for my work on the AI framework'],
+    ['2025', 'Helped create and launch CASA, a chat and voice AI sales agent'],
+    ['2025', 'Received a special award from my org president'],
+  ] },
+  { period: '2026', label: 'Building in AI', events: [
+    ['2026', 'CASA conversion rate achieves parity with human sales for a subsection of customers'],
+    ['2026', 'Started [You’re Absolutely Right](https://www.youtube.com/@youareabsolutelyright), a podcast with Wes Cole, and my own [YouTube channel](https://www.youtube.com/@scottbolinger) focused on AI'],
+    ['2026', 'Created [Gridrise.io](https://gridrise.io), a platform for building customer facing AI agents'],
+    ['2026', 'Started contributing to Airo App Builder'],
+  ] },
+];
+const timeline = `<section class="timeline" aria-labelledby="timeline-title"><div class="timeline-heading"><p class="eyebrow">The path so far</p><h2 id="timeline-title">Career timeline</h2></div><p class="timeline-hint">Scroll to explore →</p><div class="timeline-track" role="region" aria-label="Career timeline, scroll horizontally to read all eras" tabindex="0"><ol class="timeline-eras">${eras.map(({ period, label, events }) => `<li class="timeline-era"><div class="timeline-era-heading"><span class="timeline-period">${period}</span><h3>${label}</h3></div><ul>${events.map(([year, event]) => `<li>${year ? `<span class="timeline-year">${year}</span>` : ''}<span>${markdown.renderInline(event)}</span></li>`).join('')}</ul></li>`).join('')}</ol></div></section>`;
+const about = `<section class="about"><div><p class="eyebrow">About</p><h1>Scott Bolinger</h1></div><div class="about-copy">${markdown.render(await readFile('about.md', 'utf8'))}</div></section><hr class="about-divider">${timeline}`;
 await mkdir(path.join(output, 'about'), { recursive: true });
 await writeFile(path.join(output, 'about', 'index.html'), layout({ title: 'About', description: 'About Scott Bolinger.', body: about, page: 'about-page' }));
 console.log(`Built ${posts.length} post${posts.length === 1 ? '' : 's'} in ${output}/`);
