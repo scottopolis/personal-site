@@ -42,7 +42,7 @@ function layout({ title, description, body, page }) {
     <header class="site-header">
       <nav aria-label="Main navigation" class="header-links"><a href="${url('/')}">Writing</a><a href="${url('/about/')}">About</a></nav>
       <a class="wordmark" href="${url('/')}" aria-label="Scott Bolinger, home">Scott Bolinger</a>
-      <a class="header-external" href="https://www.youtube.com/@scottbolinger">YouTube <span aria-hidden="true">↗</span></a>
+      <a class="header-external" href="https://www.youtube.com/@scottbolinger">YouTube</a>
     </header>
     <main>${body}</main>
     <footer class="site-footer"><a href="${url('/')}">Scott Bolinger</a><a href="${url('/about/')}">About</a></footer>
@@ -74,7 +74,7 @@ for (const asset of await readdir('assets')) {
 for (const post of posts) {
   const cover = post.cover && !post.youtube ? `<img class="article-cover" src="${url(`/assets/${encodeURIComponent(post.cover)}`)}" alt="">` : '';
   const published = post.originalUrl
-    ? `<p class="original-note">Originally published <time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time> on ${post.originalSource === 'Substack' ? `<a href="${escape(post.originalUrl)}">Substack <span aria-hidden="true">↗</span></a>` : escape(post.originalSource)}.</p>`
+    ? `<p class="original-note">Originally published <time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time> on ${post.originalSource === 'Substack' ? `<a href="${escape(post.originalUrl)}">Substack</a>` : escape(post.originalSource)}.</p>`
     : `<time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time>`;
   const body = `<article class="article">
     <a class="back-link" href="${url('/')}">← All writing</a>
@@ -90,11 +90,11 @@ for (const post of posts) {
 const [featured, ...rest] = posts;
 const postLink = (post) => url(`/${post.slug}/`);
 const list = rest.length ? `<section class="more-posts" aria-labelledby="latest-title"><div class="section-heading"><p class="eyebrow">The journal</p><h2 id="latest-title">Latest posts</h2></div><div class="post-list">${rest.map((post) => `
-  <a class="post-row" href="${postLink(post)}"><div>${post.cover ? `<img src="${url(`/assets/${encodeURIComponent(post.cover)}`)}" alt="" loading="lazy">` : '<span class="post-row-fallback" aria-hidden="true">SB</span>'}</div><div><span class="eyebrow">${post.youtube ? 'Video' : 'Essay'}</span><h3>${escape(post.title)}</h3><p>${escape(post.description)}</p><time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time></div><span class="row-arrow" aria-hidden="true">↗</span></a>`).join('')}</div></section>` : '';
-const homepage = `<article class="featured"><a class="featured-image" href="${postLink(featured)}" aria-label="Read ${escape(featured.title)}">${featured.cover ? `<img src="${url(`/assets/${encodeURIComponent(featured.cover)}`)}" alt="">` : '<span class="featured-fallback" aria-hidden="true">Scott Bolinger</span>'}</a><div class="featured-copy"><div><p class="eyebrow">Featured ${featured.youtube ? 'video' : 'essay'}</p><h1><a href="${postLink(featured)}">${escape(featured.title)}</a></h1><p class="featured-description">${escape(featured.description)}</p></div><div class="featured-meta"><time datetime="${featured.date.toISOString().slice(0, 10)}">${dateLabel(featured.date)}</time><a href="${postLink(featured)}">Read ${featured.youtube ? 'post' : 'essay'} <span aria-hidden="true">↗</span></a></div></div></article>
+  <a class="post-row" href="${postLink(post)}">${post.cover ? `<img src="${url(`/assets/${encodeURIComponent(post.cover)}`)}" alt="" loading="lazy">` : ''}<div class="post-row-copy"><span class="eyebrow">${post.youtube ? 'Video' : 'Essay'}</span><h3>${escape(post.title)}</h3><p>${escape(post.description)}</p><time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time></div></a>`).join('')}</div></section>` : '';
+const homepage = `<article class="featured">${featured.cover ? `<a class="featured-image" href="${postLink(featured)}" aria-label="Read ${escape(featured.title)}"><img src="${url(`/assets/${encodeURIComponent(featured.cover)}`)}" alt=""></a>` : ''}<div class="featured-copy"><div><p class="eyebrow">Featured ${featured.youtube ? 'video' : 'essay'}</p><h1><a href="${postLink(featured)}">${escape(featured.title)}</a></h1><p class="featured-description">${escape(featured.description)}</p></div><div class="featured-meta"><time datetime="${featured.date.toISOString().slice(0, 10)}">${dateLabel(featured.date)}</time><a href="${postLink(featured)}">${featured.youtube ? 'Watch video' : 'Read essay'}</a></div></div></article>
   ${list}`;
 await writeFile(path.join(output, 'index.html'), layout({ title: 'Home', description: 'Scott Bolinger writes about software, AI, business, and building things.', body: homepage, page: 'home-page' }));
-const about = `<section class="about"><div><p class="eyebrow">About</p><h1>Hi, I’m Scott.</h1></div><div><p>I’m a software builder and longtime entrepreneur. I write about the ideas, tools, and lessons I pick up along the way.</p><p>More of my work and conversations are on <a href="https://www.youtube.com/@scottbolinger">YouTube <span aria-hidden="true">↗</span></a>.</p></div></section>`;
+const about = `<section class="about"><div><p class="eyebrow">About</p><h1>Hi, I’m Scott.</h1></div><div><p>I’m a software builder and longtime entrepreneur. I write about the ideas, tools, and lessons I pick up along the way.</p><p>More of my work and conversations are on <a href="https://www.youtube.com/@scottbolinger">YouTube</a>.</p></div></section>`;
 await mkdir(path.join(output, 'about'), { recursive: true });
 await writeFile(path.join(output, 'about', 'index.html'), layout({ title: 'About', description: 'About Scott Bolinger.', body: about, page: 'about-page' }));
 console.log(`Built ${posts.length} post${posts.length === 1 ? '' : 's'} in ${output}/`);
