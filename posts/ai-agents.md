@@ -2,7 +2,6 @@
 title: AI Agents
 date: 2025-05-12
 description: A simple way to think about what AI agents are, what they do, and why getting them to work reliably is hard.
-cover: featured-landscape.webp
 ---
 
 I’ve been working with AI agents a lot lately. Some people are confused what an agent really is, here’s how I think about it.
