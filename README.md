@@ -2,6 +2,8 @@
 
 A small static site built from Markdown. The homepage features the newest post, and additional posts appear below it in date order. The bio lives on a separate About page. Essays and video posts use the same article layout.
 
+The header uses inline brand SVGs from [Simple Icons v11.15.0](https://github.com/simple-icons/simple-icons/tree/11.15.0), distributed under [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+
 ## Local preview
 
 ```sh
