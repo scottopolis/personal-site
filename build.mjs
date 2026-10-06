@@ -60,10 +60,13 @@ const posts = await Promise.all(files.map(async (name) => {
   }
   const date = new Date(data.date);
   if (Number.isNaN(date.getTime())) throw new Error(`Invalid date: ${name}`);
-  return { slug, ...data, date, content };
+  const category = data.category || (data.youtube ? 'video' : 'essay');
+  if (!['essay', 'video', 'podcast'].includes(category)) throw new Error(`Invalid category: ${name}`);
+  return { slug, ...data, category, date, content };
 }));
 posts.sort((a, b) => b.date - a.date);
 if (!posts.length) throw new Error('Add at least one Markdown post before building.');
+const postLabel = (post) => ({ essay: 'Essay', video: 'Video', podcast: 'Podcast' })[post.category];
 
 await rm(output, { recursive: true, force: true });
 await mkdir(path.join(output, 'assets'), { recursive: true });
@@ -78,7 +81,7 @@ for (const post of posts) {
     : `<time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time>`;
   const body = `<article class="article">
     <a class="back-link" href="${url('/')}">← All writing</a>
-    <header class="article-header"><p class="eyebrow">${post.youtube ? 'Video' : 'Essay'}</p><h1>${escape(post.title)}</h1><p class="article-deck">${escape(post.description)}</p>${published}</header>
+    <header class="article-header"><p class="eyebrow">${postLabel(post)}</p><h1>${escape(post.title)}</h1><p class="article-deck">${escape(post.description)}</p>${published}</header>
     ${cover}
     <div class="prose">${post.youtube ? videoEmbed(post.youtube) : ''}${markdown.render(post.content)}</div>
   </article>`;
@@ -90,8 +93,8 @@ for (const post of posts) {
 const [featured, ...rest] = posts;
 const postLink = (post) => url(`/${post.slug}/`);
 const list = rest.length ? `<section class="more-posts" aria-labelledby="latest-title"><div class="section-heading"><p class="eyebrow">The journal</p><h2 id="latest-title">Latest posts</h2></div><div class="post-list">${rest.map((post) => `
-  <a class="post-row" href="${postLink(post)}">${post.cover ? `<img src="${url(`/assets/${encodeURIComponent(post.cover)}`)}" alt="" loading="lazy">` : ''}<div class="post-row-copy"><span class="eyebrow">${post.youtube ? 'Video' : 'Essay'}</span><h3>${escape(post.title)}</h3><p>${escape(post.description)}</p><time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time></div></a>`).join('')}</div></section>` : '';
-const homepage = `<article class="featured">${featured.cover ? `<a class="featured-image" href="${postLink(featured)}" aria-label="Read ${escape(featured.title)}"><img src="${url(`/assets/${encodeURIComponent(featured.cover)}`)}" alt=""></a>` : ''}<div class="featured-copy"><div><p class="eyebrow">Featured ${featured.youtube ? 'video' : 'essay'}</p><h1><a href="${postLink(featured)}">${escape(featured.title)}</a></h1><p class="featured-description">${escape(featured.description)}</p></div><div class="featured-meta"><time datetime="${featured.date.toISOString().slice(0, 10)}">${dateLabel(featured.date)}</time><a href="${postLink(featured)}">${featured.youtube ? 'Watch video' : 'Read essay'}</a></div></div></article>
+  <a class="post-row" href="${postLink(post)}">${post.cover ? `<img src="${url(`/assets/${encodeURIComponent(post.cover)}`)}" alt="" loading="lazy">` : ''}<div class="post-row-copy"><span class="eyebrow">${postLabel(post)}</span><h3>${escape(post.title)}</h3><p>${escape(post.description)}</p><time datetime="${post.date.toISOString().slice(0, 10)}">${dateLabel(post.date)}</time></div></a>`).join('')}</div></section>` : '';
+const homepage = `<article class="featured">${featured.cover ? `<a class="featured-image" href="${postLink(featured)}" aria-label="Read ${escape(featured.title)}"><img src="${url(`/assets/${encodeURIComponent(featured.cover)}`)}" alt=""></a>` : ''}<div class="featured-copy"><div><p class="eyebrow">Featured ${postLabel(featured).toLowerCase()}</p><h1><a href="${postLink(featured)}">${escape(featured.title)}</a></h1><p class="featured-description">${escape(featured.description)}</p></div><div class="featured-meta"><time datetime="${featured.date.toISOString().slice(0, 10)}">${dateLabel(featured.date)}</time><a href="${postLink(featured)}">${featured.youtube ? 'Watch video' : 'Read essay'}</a></div></div></article>
   ${list}`;
 await writeFile(path.join(output, 'index.html'), layout({ title: 'Home', description: 'Scott Bolinger writes about software, AI, business, and building things.', body: homepage, page: 'home-page' }));
 const eras = [

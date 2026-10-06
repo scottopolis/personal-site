@@ -29,6 +29,8 @@ Your article in Markdown.
 
 The cover is optional; place it in `assets/` when used. For a video post, add `youtube: https://www.youtube.com/watch?v=VIDEO_ID` to the front matter. The video embeds above the Markdown body, within the same article layout.
 
+Use `category: podcast` for You're Absolutely Right uploads. Categories are `essay`, `video`, and `podcast`; when omitted, posts default to `video` if they have a YouTube URL, otherwise `essay`. These categories supply the visible post labels and can support filtering later. For imported videos, use the original publication date in America/Los_Angeles, not the import date.
+
 Build with `SITE_BASE=personal-site npm run build` when previewing under a GitHub Pages project path. For `scottbolinger.com`, build without `SITE_BASE`.
 
 ## Deployment

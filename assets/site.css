@@ -39,7 +39,7 @@ time { color: var(--muted); font-size: 12px; }
 .section-heading h2 { margin: 8px 0 0; font-size: 38px; font-weight: 400; letter-spacing: -.04em; }
 .post-row { display: flex; align-items: center; gap: 28px; padding: 24px 0; border-bottom: 1px solid var(--line); cursor: pointer; transition: background-color .2s ease; }
 .post-row:hover, .post-row:focus-visible, .post-row:active { background: #f0eeea; }
-.post-row:hover h3, .post-row:focus-visible h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.post-row:focus-visible h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
 .post-row img { display: block; flex: 0 0 176px; width: 176px; aspect-ratio: 16 / 9; object-fit: cover; }
 .post-row-copy { flex: 1; min-width: 0; }
 .post-row h3 { margin: 6px 0 6px; font-size: 27px; font-weight: 400; letter-spacing: -.035em; }
