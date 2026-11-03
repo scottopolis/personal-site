@@ -11,6 +11,18 @@ const escape = (value) => String(value).replace(/[&<>"']/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
 })[character]);
 
+const renderImage = markdown.renderer.rules.image;
+markdown.renderer.rules.image = (tokens, index, options, env, self) => {
+  const source = tokens[index].attrGet('src');
+  if (/^\/assets\/[\w-]+\.mp4$/.test(source)) {
+    const caption = tokens[index].attrGet('title');
+    return `<video controls playsinline preload="metadata" src="${escape(url(source))}" poster="${escape(url(source.replace(/\.mp4$/, '.webp')))}" aria-label="${escape(tokens[index].content)}">${escape(tokens[index].content)}</video>${caption ? `<span class="video-caption">${escape(caption)}</span>` : ''}`;
+  }
+  const image = renderImage(tokens, index, options, env, self);
+  const caption = tokens[index].attrGet('title');
+  return `${image}${caption ? `<span class="video-caption">${escape(caption)}</span>` : ''}`;
+};
+
 function dateLabel(date) {
   return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'long', day: 'numeric', year: 'numeric' }).format(date);
 }
@@ -51,6 +63,7 @@ function layout({ title, description, body, page }) {
     <main>${body}</main>
     <footer class="site-footer"><a href="${url('/')}">Scott Bolinger</a><a href="${url('/about/')}">About</a></footer>
   </div>
+  ${page === 'post-page' ? `<script src="${url('/assets/lightbox.js')}" defer></script>` : ''}
 </body>
 </html>`;
 }
@@ -87,7 +100,7 @@ for (const post of posts) {
     <a class="back-link" href="${url('/')}">← All writing</a>
     <header class="article-header"><p class="eyebrow">${postLabel(post)}</p><h1>${escape(post.title)}</h1><p class="article-deck">${escape(post.description)}</p>${published}</header>
     ${cover}
-    <div class="prose">${post.youtube ? videoEmbed(post.youtube) : ''}${markdown.render(post.content)}</div>
+    <div class="prose">${post.youtube ? `${videoEmbed(post.youtube)}${post.youtubeCaption ? `<p class="video-caption">${escape(post.youtubeCaption)}</p>` : ''}` : ''}${markdown.render(post.content)}</div>
   </article>`;
   const directory = path.join(output, post.slug);
   await mkdir(directory, { recursive: true });
