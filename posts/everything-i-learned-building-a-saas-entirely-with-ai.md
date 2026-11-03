@@ -4,6 +4,7 @@ date: "2026-11-02"
 description: "I spent the last few months building a SaaS app entirely with AI. Here's what I learned."
 category: essay
 cover: "video-cGjUkCz9t64.webp"
+socialImage: "gridrise-saas-social.jpg"
 youtube: "https://www.youtube.com/watch?v=cGjUkCz9t64"
 youtubeCaption: "This video was made with Opus 5.5"
 ---

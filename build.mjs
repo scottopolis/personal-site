@@ -36,7 +36,7 @@ function videoEmbed(link) {
   return `<div class="video-embed"><iframe src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube video player" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>`;
 }
 
-function layout({ title, description, body, page }) {
+function layout({ title, description, body, page, socialImage }) {
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -47,6 +47,9 @@ function layout({ title, description, body, page }) {
   <meta name="description" content="${escape(description)}">
   <meta property="og:title" content="${escape(title)}">
   <meta property="og:description" content="${escape(description)}">
+  ${socialImage ? `<meta property="og:image" content="${escape(`https://scottbolinger.com${url(`/assets/${encodeURIComponent(socialImage)}`)}`)}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${escape(`https://scottbolinger.com${url(`/assets/${encodeURIComponent(socialImage)}`)}`)}">` : ''}
   <link rel="stylesheet" href="${url('/assets/site.css')}">
 </head>
 <body class="${page}">
@@ -104,7 +107,7 @@ for (const post of posts) {
   </article>`;
   const directory = path.join(output, post.slug);
   await mkdir(directory, { recursive: true });
-  await writeFile(path.join(directory, 'index.html'), layout({ title: post.title, description: post.description, body, page: 'post-page' }));
+  await writeFile(path.join(directory, 'index.html'), layout({ title: post.title, description: post.description, body, page: 'post-page', socialImage: post.socialImage }));
 }
 
 const [featured, ...rest] = posts;
