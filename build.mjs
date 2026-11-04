@@ -148,4 +148,16 @@ const timeline = `<section class="timeline" aria-labelledby="timeline-title"><di
 const about = `<section class="about"><div><p class="eyebrow">About</p><h1>Scott Bolinger</h1></div><div class="about-copy">${markdown.render(await readFile('about.md', 'utf8'))}</div></section><hr class="about-divider">${timeline}`;
 await mkdir(path.join(output, 'about'), { recursive: true });
 await writeFile(path.join(output, 'about', 'index.html'), layout({ title: 'About', description: 'About Scott Bolinger.', body: about, page: 'about-page' }));
+const absolute = (pathname) => `https://scottbolinger.com${url(pathname)}`;
+const sitemapEntry = (pathname, date) => `  <url><loc>${escape(absolute(pathname))}</loc>${date ? `<lastmod>${date.toISOString().slice(0, 10)}</lastmod>` : ''}</url>`;
+await writeFile(path.join(output, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${[sitemapEntry('/'), sitemapEntry('/about/'), ...posts.map((post) => sitemapEntry(`/${post.slug}/`, post.date))].join('\n')}
+</urlset>
+`);
+await writeFile(path.join(output, 'robots.txt'), `User-agent: *
+Allow: /
+
+Sitemap: ${absolute('/sitemap.xml')}
+`);
 console.log(`Built ${posts.length} post${posts.length === 1 ? '' : 's'} in ${output}/`);
